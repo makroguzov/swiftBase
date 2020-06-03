@@ -45,6 +45,7 @@ delEvenFrom(array: &array)
 let fibonacciNumbers = createFibonacсiNum()
 
 let simpleNumbers = createSimpleNum()
+simpleNumbers.count
 
 //проверка числа на четность
 func isNumEven(number: Int) -> Bool {
@@ -105,41 +106,57 @@ func createFibonacсiNum() -> [Double] {
 //создаем массив простых чисел
 func createSimpleNum() -> [Double] {
     
-    var tempMass: [Bool] = []
-    
-    for _ in 0...99 {
-        
-        tempMass.append(true)
-        
-    }
-  
-    for p in 2..<tempMass.count {
-        
-        if tempMass[p] {
-            
-            for j in stride(from: p, to: tempMass.count, by: p) {
-                
-                tempMass[j] = false
-                
-            }
-            
-            tempMass[p] = true
-            
-        }
-    }
-    
     var simpleNymbers: [Double] = []
     
-    for (i, element) in tempMass.enumerated() {
+    var numOfIteration: Int = 1
+    var finish: Bool = false
+    
+    while !finish {
         
-        if element == true {
-            
-            simpleNymbers.append(Double(i))
-            
+        var tempMass: [Bool] = []
+          
+        for _ in (100 * (numOfIteration - 1))..<(100 * numOfIteration) {
+              
+            tempMass.append(true)
+              
         }
         
+        for p in 2..<tempMass.count {
+              
+            if tempMass[p] {
+                  
+                for j in stride(from: p, to: tempMass.count, by: p) {
+                      
+                    tempMass[j] = false
+                      
+                }
+                  
+                tempMass[p] = true
+                  
+            }
+        }
+          
+        for (i, element) in tempMass.enumerated() {
+              
+            if element == true {
+                  
+                simpleNymbers.append(Double(i))
+                  
+            }
+
+            if simpleNymbers.count == 100 {
+                
+                finish = true
+                break
+                
+            }
+
+        }
+        
+        numOfIteration += 1
+        
     }
-    
+        
     return simpleNymbers
     
 }
