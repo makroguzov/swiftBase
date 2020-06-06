@@ -44,20 +44,20 @@ delEvenFrom(array: &array)
 
 let fibonacciNumbers = createFibonacсiNum()
 
-let simpleNumbers = createSimpleNum()
+let simpleNumbers = createSimpleNum(amount: 100)
 simpleNumbers.count
 
 //проверка числа на четность
 func isNumEven(number: Int) -> Bool {
 
-    return (number % 2 == 0) ? true : false
+    return number % 2 == 0
     
 }
 
 //проверяем делится ли на 3
 func isNumDivThree(number: Int) -> Bool {
     
-      return (number % 3 == 0) ? true : false
+      return number % 3 == 0
 
 }
 
@@ -103,6 +103,34 @@ func createFibonacсiNum() -> [Double] {
     
 }
 
+//создаем массив простых чисел
+func createSimpleNum(amount: Int) -> [Int] {
+    
+    var simpleNumbers: [Int] = [1 , 2, 3, 5, 7]
+    
+    var possibleSimpleNumber = 7
+    
+    nextNumber : while simpleNumbers.count < 100 {
+        
+        possibleSimpleNumber += 1
+        
+        for divider in 2..<possibleSimpleNumber {
+            
+            if possibleSimpleNumber % divider == 0 {
+                continue nextNumber
+            }
+            
+        }
+        
+        simpleNumbers.append(possibleSimpleNumber)
+        
+    }
+    
+    return simpleNumbers
+
+}
+
+/*
 //создаем массив простых чисел
 func createSimpleNum() -> [Double] {
     
@@ -160,4 +188,5 @@ func createSimpleNum() -> [Double] {
     return simpleNymbers
     
 }
+*/
 
