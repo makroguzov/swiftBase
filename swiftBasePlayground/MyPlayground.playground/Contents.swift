@@ -33,6 +33,7 @@ func triangle(a: Double, b: Double){
 }
 */
 
+/*
 isNumEven(number: 2)
 isNumEven(number: 3)
 
@@ -129,7 +130,7 @@ func createSimpleNum(amount: Int) -> [Int] {
     return simpleNumbers
 
 }
-
+*/
 /*
 //создаем массив простых чисел
 func createSimpleNum() -> [Double] {
@@ -190,3 +191,107 @@ func createSimpleNum() -> [Double] {
 }
 */
 
+
+/*
+ 1. Описать несколько структур – любой легковой автомобиль и любой грузовик.
+ 2. Структуры должны содержать марку авто, год выпуска, объем багажника/кузова, запущен ли двигатель, открыты ли окна, заполненный объем багажника.
+ 3. Описать перечисление с возможными действиями с автомобилем: запустить/заглушить двигатель, открыть/закрыть окна, погрузить/выгрузить из кузова/багажника груз определенного объема.
+ 4. Добавить в структуры метод с одним аргументом типа перечисления, который будет менять свойства структуры в зависимости от действия.
+ 5. Инициализировать несколько экземпляров структур. Применить к ним различные действия.
+ 6. Вывести значения свойств экземпляров в консоль.
+ */
+
+enum Doors {
+    
+    case leftFront
+    case rightFront
+    case leftBack
+    case rightBack
+    
+}
+
+struct Car {
+    
+    init(model: String, yearOfIssue: Int) {
+        
+        self.model = model
+        self.yearOfIssue = yearOfIssue
+        
+    }
+    
+    let model: String
+    let yearOfIssue: Int
+    
+    var baggageSpace: Int?
+    var power: Int?
+    var amountOfLuggage: Int?
+    var color: String?
+    var isEngineSwitchOn: Bool = false
+    
+    private var openDoors: Set<Doors> = []
+    
+    var fullLuggageSpace: Int? {
+        
+        get {
+            
+            guard let baggageSpace = self.baggageSpace else {
+        
+                return nil
+                
+            }
+            
+            guard let amountOfLuggage = self.amountOfLuggage else {
+                
+                return self.baggageSpace
+                
+            }
+            
+            return baggageSpace - amountOfLuggage
+            
+        }
+    }
+        
+    mutating func openDoor(door: Doors) {
+        
+        self.openDoors.insert(door)
+        
+    }
+    
+    mutating func closeDoor(door: Doors) {
+        
+        self.openDoors.remove(door)
+        
+    }
+    
+    mutating func swithOnEngine() {
+        
+        self.isEngineSwitchOn = true
+        
+    }
+    
+    mutating func swithOffEngine() {
+        
+        self.isEngineSwitchOn = false
+        
+    }
+    
+    func printinfo() -> String {
+        
+        return """
+        Машина марки \(self.model).
+        Цвет машины \(color ?? "Цвет не задан").
+        Мощность двигателя: \(self.power ?? -1).
+        Открытые двери: \(self.openDoors).
+        \(isEngineSwitchOn ? "Двигатель включен." : "Двигатель выключен.")
+        Свободное место в багажнике: \(self.fullLuggageSpace ?? -1)
+        Объем багажника: \(self.baggageSpace ?? -1)
+        """
+    }
+    
+}
+
+var bmw = Car(model: "bmw", yearOfIssue: 2020)
+bmw.power = 360
+bmw.openDoor(door: Doors.leftBack)
+
+bmw.printinfo()
