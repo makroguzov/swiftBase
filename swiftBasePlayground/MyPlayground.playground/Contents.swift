@@ -307,6 +307,7 @@ bmw.printinfo()
  6. Вывести значения свойств экземпляров в консоль.
 */
 
+/*
 class Automobile {
     
     enum Doors {
@@ -520,5 +521,7 @@ truck.increasePowerOn(power: 23)
 truck.startEngine()
 truck.freeSpase
 truck.info()
+*/
+
 
 
