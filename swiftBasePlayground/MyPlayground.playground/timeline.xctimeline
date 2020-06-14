@@ -3,8 +3,18 @@
    version = "3.0">
    <TimelineItems>
       <LoggerValueHistoryTimelineItem
-         documentLocation = "file:///Users/macuser/Desktop/mainCourse/swiftBase/swiftBasePlayground/MyPlayground.playground#CharacterRangeLen=34&amp;CharacterRangeLoc=2152&amp;EndingColumnNumber=8&amp;EndingLineNumber=116&amp;StartingColumnNumber=8&amp;StartingLineNumber=115&amp;Timestamp=613574105.782171"
+         documentLocation = "file:///Users/macuser/Desktop/mainCourse/swiftBase/swiftBasePlayground/MyPlayground.playground#CharacterRangeLen=34&amp;CharacterRangeLoc=2152&amp;EndingColumnNumber=8&amp;EndingLineNumber=116&amp;StartingColumnNumber=8&amp;StartingLineNumber=115&amp;Timestamp=613858107.116004"
          selectedRepresentationIndex = "2"
+         shouldTrackSuperviewWidth = "NO">
+      </LoggerValueHistoryTimelineItem>
+      <LoggerValueHistoryTimelineItem
+         documentLocation = "file:///Users/macuser/Desktop/mainCourse/swiftBase/swiftBasePlayground/MyPlayground.playground#CharacterRangeLen=12&amp;CharacterRangeLoc=11953&amp;EndingColumnNumber=0&amp;EndingLineNumber=522&amp;StartingColumnNumber=1&amp;StartingLineNumber=521&amp;Timestamp=613858107.121281"
+         selectedRepresentationIndex = "0"
+         shouldTrackSuperviewWidth = "NO">
+      </LoggerValueHistoryTimelineItem>
+      <LoggerValueHistoryTimelineItem
+         documentLocation = "file:///Users/macuser/Desktop/mainCourse/swiftBase/swiftBasePlayground/MyPlayground.playground#CharacterRangeLen=10&amp;CharacterRangeLoc=11731&amp;EndingColumnNumber=0&amp;EndingLineNumber=514&amp;StartingColumnNumber=1&amp;StartingLineNumber=513&amp;Timestamp=613858107.121592"
+         selectedRepresentationIndex = "0"
          shouldTrackSuperviewWidth = "NO">
       </LoggerValueHistoryTimelineItem>
    </TimelineItems>
