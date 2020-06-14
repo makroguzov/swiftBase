@@ -200,7 +200,7 @@ func createSimpleNum() -> [Double] {
  5. Инициализировать несколько экземпляров структур. Применить к ним различные действия.
  6. Вывести значения свойств экземпляров в консоль.
  */
-
+/*
 enum Doors {
     
     case leftFront
@@ -295,3 +295,230 @@ bmw.power = 360
 bmw.openDoor(door: Doors.leftBack)
 
 bmw.printinfo()
+*/
+
+
+/*
+ 1. Описать класс Car c общими свойствами автомобилей и пустым методом действия по аналогии с прошлым заданием.
+ 2. Описать пару его наследников trunkCar и sportСar. Подумать, какими отличительными свойствами обладают эти автомобили. Описать в каждом наследнике специфичные для него свойства.
+ 3. Взять из прошлого урока enum с действиями над автомобилем. Подумать, какие особенные действия имеет trunkCar, а какие – sportCar. Добавить эти действия в перечисление.
+ 4. В каждом подклассе переопределить метод действия с автомобилем в соответствии с его классом.
+ 5. Создать несколько объектов каждого класса. Применить к ним различные действия.
+ 6. Вывести значения свойств экземпляров в консоль.
+*/
+
+class Automobile {
+    
+    enum Doors {
+        case leftFrontDoor,rightFrontDoor,backLeftDoor,backRightDoor,BaggageDoor
+    }
+    enum Colors {
+     case black,white,red,green,purple,yelow
+    }
+    
+    private let model: String
+    private let yearOfIssue: Int
+    
+    var baggageSpace: Int {
+        didSet{
+            print("Объем багажника увеличен на \(baggageSpace - oldValue)")
+        }
+    }
+    var power: Int {
+        didSet{
+            print("Мощность увеличена на \(power - oldValue)")
+        }
+    }
+    
+    private var color: Colors {
+        didSet{
+            print("Цвет изменес с \(oldValue) на \(color)")
+        }
+    }
+    private var amountOfLuggage: Int = 0 {
+        didSet{
+            print("В багажник положен груз объемом \(amountOfLuggage - oldValue)")
+        }
+    }
+    private var isEngineSwitchOn: Bool = false {
+        didSet {
+            if isEngineSwitchOn {
+                print("Двигатель запущен.")
+            } else {
+                print("Двигатель остановлен.")
+            }
+        }
+    }
+    
+    var freeSpase: Int {
+        baggageSpace - amountOfLuggage
+    }
+   
+    private var openDoors: Set<Doors> = []
+    
+    init(model: String, yearOfIssue: Int, baggageSpace: Int, power: Int, color: Colors) {
+        self.model = model
+        self.yearOfIssue = yearOfIssue
+        self.baggageSpace = baggageSpace
+        self.power = power
+        self.color = color
+    }
+    
+    func startEngine() {
+        isEngineSwitchOn = true
+    }
+    
+    func stopEngine() {
+        isEngineSwitchOn = false
+    }
+    
+    func putLuggage(luggage: Int) {
+        if freeSpase > luggage {
+            self.amountOfLuggage += luggage
+        } else {
+            print("В багажнике не хватает места.")
+        }
+    }
+    
+    func increaseBaggageSpaceOn(space: Int) {
+        baggageSpace = baggageSpace + space
+    }
+    
+    func increasePowerOn(power: Int) {
+        self.power = power
+    }
+    
+    func changeColorOn(color: Colors) {
+        self.color = color
+    }
+    
+    func openDoor(door: Doors) {
+        openDoors.insert(door)
+    }
+    
+    func closeDoor(door: Doors) {
+        openDoors.remove(door)
+    }
+    
+    func info() -> String {
+        return """
+        цвет: \(color)
+        мощность: \(power)
+        объем багажника: \(baggageSpace)
+        модель: \(model)
+        год выпуска: \(yearOfIssue)
+        объем груза: \(amountOfLuggage)
+        открытые двери: \(openDoors)
+        """
+    }
+}
+
+
+class Truck : Automobile {
+    
+    enum Doors {
+        case leftDoor,rightDoor,baggageDoor
+    }
+
+    var isFlatBedUp: Bool = false {
+        didSet {
+            if isFlatBedUp {
+                print("Кузов поднят.")
+            } else {
+                print("Кузов опущен.")
+            }
+        }
+    }
+    
+    override func increasePowerOn(power: Int) {
+        if (self.power + power) < 200 {
+            super.increasePowerOn(power: power)
+        } else {
+            print("Грузовик так не поедет.")
+        }
+    }
+    
+    func upFlatBed() {
+        isFlatBedUp = true
+    }
+    
+    func downFlatBed() {
+        isFlatBedUp = false
+    }
+    
+    override func info() -> String {
+        return """
+        \(super.info())
+        кузов поднят: \(isFlatBedUp)
+        """
+    }
+}
+
+class Car : Automobile {
+        
+    private var isLukeOpen: Bool = false {
+        didSet {
+            if isLukeOpen {
+                print("Люк открыт.")
+            } else {
+                print("Люк закрыт.")
+            }
+        }
+    }
+    private var isSpoilerExist = false {
+        didSet {
+            if isSpoilerExist {
+                print("Спойлер установлен.")
+            } else {
+                print("Спойлер снят.")
+            }
+        }
+    }
+    
+    override func increaseBaggageSpaceOn(space: Int) {
+        if (baggageSpace + space) < 200 {
+            super.increaseBaggageSpaceOn(space: space)
+        } else {
+            print("Не надо так. Лучше купи грузовик.")
+        }
+    }
+    
+    func putSpoiler() {
+        isSpoilerExist = true
+    }
+    
+    func deleteSpoiler() {
+        isSpoilerExist = false
+    }
+    
+    func openLuke() {
+        isLukeOpen = true
+    }
+    
+    func closeLuke() {
+        isLukeOpen = false
+    }
+    
+    override func info() -> String {
+        return """
+        \(super.info())
+        люк открыт: \(isLukeOpen)
+        спойлер установлен: \(isSpoilerExist)
+        """
+    }
+}
+
+let bmw: Car = Car(model: "bmw", yearOfIssue: 2000, baggageSpace: 60, power: 360, color: Automobile.Colors.black)
+bmw.openDoor(door: Automobile.Doors.backRightDoor)
+bmw.putSpoiler()
+bmw.info()
+
+
+let truck: Truck = Truck(model: "qwe", yearOfIssue: 2019, baggageSpace: 1000, power: 300, color: Automobile.Colors.white)
+truck.upFlatBed()
+truck.increasePowerOn(power: 23)
+truck.startEngine()
+truck.freeSpase
+truck.info()
+
+
