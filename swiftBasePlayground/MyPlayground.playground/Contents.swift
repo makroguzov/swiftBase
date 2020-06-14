@@ -523,5 +523,225 @@ truck.freeSpase
 truck.info()
 */
 
+/*
+1. Создать протокол «Car» и описать свойства, общие для автомобилей, а также метод действия.
+2. Создать расширения для протокола «Car» и реализовать в них методы конкретных действий с автомобилем: открыть/закрыть окно, запустить/заглушить двигатель и т.д. (по одному методу на действие, реализовывать следует только те действия, реализация которых общая для всех автомобилей).
+3. Создать два класса, имплементирующих протокол «Car» - trunkCar и sportСar. Описать в них свойства, отличающиеся для спортивного автомобиля и цистерны.
+4. Для каждого класса написать расширение, имплементирующее протокол CustomStringConvertible.
+5. Создать несколько объектов каждого класса. Применить к ним различные действия.
+6. Вывести сами объекты в консоль.
+*/
 
 
+enum Doors {
+    case leftFrontDoor,rightFrontDoor,backLeftDoor,backRightDoor,BaggageDoor
+}
+
+enum Colors {
+ case black,white,red,green,purple,yelow
+}
+
+protocol Automobile {
+        
+    var model: String { get }
+    var yearOfIssue: Int { get }
+    
+    var baggageSpace: Int { get set }
+    var power: Int { get set }
+    
+    var color: Colors { get set }
+    var amountOfLuggage: Int { get set }
+    var isEngineSwitchOn: Bool { get set }
+    var freeSpase: Int { get set }
+    var openDoors: Set<Doors> { get set }
+    
+    func startEngine()
+    func stopEngine()
+ 
+}
+
+extension Automobile {
+
+    mutating func startEngine() {
+        isEngineSwitchOn = true
+    }
+      
+    mutating func stopEngine() {
+          isEngineSwitchOn = false
+    }
+    
+}
+
+extension Automobile {
+
+    mutating func putLuggage(luggage: Int) {
+        if freeSpase > luggage {
+            self.amountOfLuggage += luggage
+        } else {
+            print("В багажнике не хватает места.")
+        }
+    }
+    
+    mutating func increaseBaggageSpaceOn(space: Int) {
+        baggageSpace = baggageSpace + space
+    }
+}
+
+extension Automobile {
+
+    mutating func openDoor(door: Doors) {
+        openDoors.insert(door)
+    }
+    
+    mutating func closeDoor(door: Doors) {
+        openDoors.remove(door)
+    }
+
+}
+
+extension Automobile {
+
+    mutating func increasePowerOn(power: Int) {
+        self.power = power
+    }
+    
+}
+
+extension Automobile {
+
+    mutating func changeColorOn(color: Colors) {
+        self.color = color
+    }
+    
+}
+
+    
+
+extension Automobile {
+    
+    func info() -> String {
+        return """
+        цвет: \(color)
+        мощность: \(power)
+        объем багажника: \(baggageSpace)
+        модель: \(model)
+        год выпуска: \(yearOfIssue)
+        объем груза: \(amountOfLuggage)
+        открытые двери: \(openDoors)
+        """
+    }
+}
+
+
+class Truck : Automobile {
+    
+    var model: String
+
+    var yearOfIssue: Int
+    
+    var baggageSpace: Int
+    
+    var power: Int
+    
+    var color: Colors
+    
+    var amountOfLuggage: Int
+    
+    var isEngineSwitchOn: Bool
+    
+    var freeSpase: Int
+    
+    var openDoors: Set<Doors>
+    
+    
+    enum Doors {
+        case leftDoor,rightDoor,baggageDoor
+    }
+
+    var isFlatBedUp: Bool = false {
+        didSet {
+            if isFlatBedUp {
+                print("Кузов поднят.")
+            } else {
+                print("Кузов опущен.")
+            }
+        }
+    }
+    
+    override func increasePowerOn(power: Int) {
+        if (self.power + power) < 200 {
+            super.increasePowerOn(power: power)
+        } else {
+            print("Грузовик так не поедет.")
+        }
+    }
+    
+    func upFlatBed() {
+        isFlatBedUp = true
+    }
+    
+    func downFlatBed() {
+        isFlatBedUp = false
+    }
+    
+    override func info() -> String {
+        return """
+        \(super.info())
+        кузов поднят: \(isFlatBedUp)
+        """
+    }
+}
+
+class Car : Automobile {
+        
+    private var isLukeOpen: Bool = false {
+        didSet {
+            if isLukeOpen {
+                print("Люк открыт.")
+            } else {
+                print("Люк закрыт.")
+            }
+        }
+    }
+    private var isSpoilerExist = false {
+        didSet {
+            if isSpoilerExist {
+                print("Спойлер установлен.")
+            } else {
+                print("Спойлер снят.")
+            }
+        }
+    }
+    
+    override func increaseBaggageSpaceOn(space: Int) {
+        if (baggageSpace + space) < 200 {
+            super.increaseBaggageSpaceOn(space: space)
+        } else {
+            print("Не надо так. Лучше купи грузовик.")
+        }
+    }
+    
+    func putSpoiler() {
+        isSpoilerExist = true
+    }
+    
+    func deleteSpoiler() {
+        isSpoilerExist = false
+    }
+    
+    func openLuke() {
+        isLukeOpen = true
+    }
+    
+    func closeLuke() {
+        isLukeOpen = false
+    }
+    
+    override func info() -> String {
+        return """
+        \(super.info())
+        люк открыт: \(isLukeOpen)
+        спойлер установлен: \(isSpoilerExist)
+        """
+    }
+}
