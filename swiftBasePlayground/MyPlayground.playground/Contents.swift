@@ -316,8 +316,8 @@ class Automobile {
      case black,white,red,green,purple,yelow
     }
     
-    let model: String
-    let yearOfIssue: Int
+    private let model: String
+    private let yearOfIssue: Int
     
     var baggageSpace: Int {
         didSet{
@@ -329,17 +329,18 @@ class Automobile {
             print("Мощность увеличена на \(power - oldValue)")
         }
     }
-    var color: Colors {
+    
+    private var color: Colors {
         didSet{
             print("Цвет изменес с \(oldValue) на \(color)")
         }
     }
-    var amountOfLuggage: Int = 0 {
+    private var amountOfLuggage: Int = 0 {
         didSet{
             print("В багажник положен груз объемом \(amountOfLuggage - oldValue)")
         }
     }
-    var isEngineSwitchOn: Bool = false {
+    private var isEngineSwitchOn: Bool = false {
         didSet {
             if isEngineSwitchOn {
                 print("Двигатель запущен.")
@@ -407,6 +408,7 @@ class Automobile {
         модель: \(model)
         год выпуска: \(yearOfIssue)
         объем груза: \(amountOfLuggage)
+        открытые двери: \(openDoors)
         """
     }
 }
@@ -445,7 +447,8 @@ class Truck : Automobile {
     }
     
     override func info() -> String {
-        return super.info() + """
+        return """
+        \(super.info())
         кузов поднят: \(isFlatBedUp)
         """
     }
@@ -453,7 +456,7 @@ class Truck : Automobile {
 
 class Car : Automobile {
         
-    var isLukeOpen: Bool = false {
+    private var isLukeOpen: Bool = false {
         didSet {
             if isLukeOpen {
                 print("Люк открыт.")
@@ -462,7 +465,7 @@ class Car : Automobile {
             }
         }
     }
-    var isSpoilerExist = false {
+    private var isSpoilerExist = false {
         didSet {
             if isSpoilerExist {
                 print("Спойлер установлен.")
@@ -497,10 +500,25 @@ class Car : Automobile {
     }
     
     override func info() -> String {
-        return super.info() + """
+        return """
+        \(super.info())
         люк открыт: \(isLukeOpen)
         спойлер установлен: \(isSpoilerExist)
         """
     }
 }
+
+let bmw: Car = Car(model: "bmw", yearOfIssue: 2000, baggageSpace: 60, power: 360, color: Automobile.Colors.black)
+bmw.openDoor(door: Automobile.Doors.backRightDoor)
+bmw.putSpoiler()
+bmw.info()
+
+
+let truck: Truck = Truck(model: "qwe", yearOfIssue: 2019, baggageSpace: 1000, power: 300, color: Automobile.Colors.white)
+truck.upFlatBed()
+truck.increasePowerOn(power: 23)
+truck.startEngine()
+truck.freeSpase
+truck.info()
+
 
