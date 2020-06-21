@@ -952,7 +952,15 @@ protocol ForEachActionContainer : Container {
 }
 
 struct Queue<T>: Container {
-    private var queueList: [T] = []
+    private var queueList: [T]
+    
+    init() {
+        queueList = []
+    }
+    
+    init(_ list: [T]){
+        queueList = list
+    }
     
     func size() -> Int {
         return queueList.count
@@ -987,3 +995,21 @@ extension Queue: ForEachActionContainer {
     }
 }
 
+extension Queue {
+    subscript (index: Int) -> T? {
+        if index < queueList.count {
+            return queueList[index]
+        } else {
+            return nil
+        }
+    }
+}
+
+var queue: Queue = Queue([2, 4, 6, 8, 9, 11])
+queue[3]
+queue.push(elem: 15)
+queue[20]
+print(queue)
+queue.filter(){
+    $0 % 2 == 0
+}
