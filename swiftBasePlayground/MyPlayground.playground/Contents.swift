@@ -307,6 +307,7 @@ bmw.printinfo()
  6. Вывести значения свойств экземпляров в консоль.
 */
 
+/*
 class Automobile {
     
     enum Doors {
@@ -520,5 +521,409 @@ truck.increasePowerOn(power: 23)
 truck.startEngine()
 truck.freeSpase
 truck.info()
+*/
 
+/*
+1. Создать протокол «Car» и описать свойства, общие для автомобилей, а также метод действия.
+2. Создать расширения для протокола «Car» и реализовать в них методы конкретных действий с автомобилем: открыть/закрыть окно, запустить/заглушить двигатель и т.д. (по одному методу на действие, реализовывать следует только те действия, реализация которых общая для всех автомобилей).
+3. Создать два класса, имплементирующих протокол «Car» - trunkCar и sportСar. Описать в них свойства, отличающиеся для спортивного автомобиля и цистерны.
+4. Для каждого класса написать расширение, имплементирующее протокол CustomStringConvertible.
+5. Создать несколько объектов каждого класса. Применить к ним различные действия.
+6. Вывести сами объекты в консоль.
+*/
+
+
+enum Doors {
+    case leftFrontDoor,rightFrontDoor,backLeftDoor,backRightDoor,BaggageDoor
+}
+
+enum Colors {
+ case black,white,red,green,purple,yelow
+}
+
+protocol Automobile {
+        
+    var model: String { get }
+    
+    var yearOfIssue: Int { get }
+    
+    var baggageSpace: Int { get set }
+    
+    var power: Int { get set }
+    
+    var color: Colors { get set }
+    
+    var amountOfLuggage: Int { get set }
+    
+    var isEngineSwitchOn: Bool { get set }
+    
+    var freeSpase: Int { get }
+    
+    var openDoors: Set<Doors> { get set }
+    
+    init(model: String, yearOfIssue: Int, baggageSpace: Int, power: Int, color: Colors)
+    
+    mutating func startEngine()
+    mutating func stopEngine()
+    
+    mutating func putLuggage(luggage: Int)
+    mutating func increaseBaggageSpaceOn(space: Int)
+    
+    mutating func openDoor(door: Doors)
+    mutating func closeDoor(door: Doors)
+    
+    mutating func increasePowerOn(power: Int)
+    
+    mutating func changeColorOn(color: Colors)
+}
+
+extension Automobile {
+    mutating func startEngine() {
+        guard !isEngineSwitchOn else {
+            print("Двигатель уже запущен.")
+            return
+        }
+        isEngineSwitchOn = true
+    }
+      
+    mutating func stopEngine() {
+        guard isEngineSwitchOn else {
+            print("Двигатель и так не работает.")
+            return
+        }
+        isEngineSwitchOn = false
+    }
+}
+
+extension Automobile {
+    mutating func putLuggage(luggage: Int) {
+        if freeSpase > luggage {
+            self.amountOfLuggage += luggage
+        } else {
+            print("В багажнике не хватает места.")
+        }
+    }
+    
+    mutating func increaseBaggageSpaceOn(space: Int) {
+        baggageSpace = baggageSpace + space
+    }
+}
+
+extension Automobile {
+    mutating func openDoor(door: Doors) {
+        guard !openDoors.contains(door) else {
+            print("Дверь уже открыта.")
+            return
+        }
+        openDoors.insert(door)
+    }
+
+    mutating func closeDoor(door: Doors) {
+        guard openDoors.contains(door) else {
+            print("Дверь уже закрыта.")
+            return
+        }
+        openDoors.remove(door)
+    }
+}
+
+extension Automobile {
+    mutating func increasePowerOn(power: Int) {
+        self.power = power
+    }
+}
+
+extension Automobile {
+    mutating func changeColorOn(color: Colors) {
+        self.color = color
+    }
+}
+
+
+//реализация грузовика
+protocol TruckFlatBedOptions {
+    var isFlatBedUp: Bool { get set }
+    
+    func upFlatBed()
+    func downFlatBed()
+}
+
+class Truck : Automobile {
+    var model: String
+       
+    var yearOfIssue: Int
+    
+    var baggageSpace: Int {
+        didSet{
+            print("Объем багажника увеличен на \(baggageSpace - oldValue)")
+        }
+    }
+    
+    var power: Int {
+        didSet{
+            print("Мощность увеличена на \(power - oldValue)")
+        }
+    }
+     
+    internal var color: Colors {
+         didSet{
+             print("Цвет изменес с \(oldValue) на \(color)")
+         }
+     }
+    
+    internal var amountOfLuggage: Int = 0 {
+         didSet{
+             print("В багажник положен груз объемом \(amountOfLuggage - oldValue)")
+         }
+     }
+    
+    internal var isEngineSwitchOn: Bool = false {
+         didSet {
+             if isEngineSwitchOn {
+                 print("Двигатель запущен.")
+             } else {
+                 print("Двигатель остановлен.")
+             }
+         }
+     }
+     
+    var freeSpase: Int {
+        baggageSpace - amountOfLuggage
+    }
+    
+    var openDoors: Set<Doors> = []
+    
+    var isFlatBedUp: Bool = false {
+        didSet {
+            if isFlatBedUp {
+                print("Кузов поднят.")
+            } else {
+                print("Кузов опущен.")
+            }
+        }
+    }
+    
+    required init(model: String, yearOfIssue: Int, baggageSpace: Int, power: Int, color: Colors) {
+          self.model = model
+          self.yearOfIssue = yearOfIssue
+          self.baggageSpace = baggageSpace
+          self.power = power
+          self.color = color
+      }
+
+    func increasePowerOn(power: Int) {
+        if (self.power + power) < 200 {
+            self.power += power
+        } else {
+            print("Грузовик так не поедет.")
+        }
+    }
+    
+}
+
+extension Truck: TruckFlatBedOptions {
+    func upFlatBed() {
+        guard !isFlatBedUp else {
+            print("Кузов уже поднят.")
+            return
+        }
+        isFlatBedUp = true
+    }
+    
+    func downFlatBed() {
+        guard isFlatBedUp else {
+            print("Кузов уже опущен.")
+            return
+        }
+        isFlatBedUp = false
+    }
+}
+
+extension Truck: CustomStringConvertible {
+    var description: String {
+        return """
+        цвет: \(color) \n
+        мощность: \(power) \n
+        объем багажника: \(baggageSpace) \n
+        модель: \(model) \n
+        год выпуска: \(yearOfIssue) \n
+        объем груза: \(amountOfLuggage) \n
+        открытые двери: \(openDoors) \n
+        свободного места в бвгажнике: \(freeSpase) \n
+        поднят ли кузов: \(isFlatBedUp)
+        """
+    }
+}
+
+//реализация спорткара
+protocol SportCarLukeOptions {
+    var isLukeOpen: Bool { get set }
+    
+    func openLuke()
+    func closeLuke()
+}
+
+protocol SportCarSpoilerOptions {
+    var isSpoilerExist: Bool { get set }
+    
+    func putSpoiler()
+    func deleteSpoiler()
+}
+
+class SportCar : Automobile {
+    var model: String
+       
+    var yearOfIssue: Int
+    
+    var baggageSpace: Int {
+        didSet{
+            print("Объем багажника увеличен на \(baggageSpace - oldValue)")
+        }
+    }
+    
+    var power: Int {
+        didSet{
+            print("Мощность увеличена на \(power - oldValue)")
+        }
+    }
+     
+    internal var color: Colors {
+         didSet{
+             print("Цвет изменес с \(oldValue) на \(color)")
+         }
+     }
+    
+    internal var amountOfLuggage: Int = 0 {
+         didSet{
+             print("В багажник положен груз объемом \(amountOfLuggage - oldValue)")
+         }
+     }
+    
+    internal var isEngineSwitchOn: Bool = false {
+         didSet {
+             if isEngineSwitchOn {
+                 print("Двигатель запущен.")
+             } else {
+                 print("Двигатель остановлен.")
+             }
+         }
+     }
+     
+    var freeSpase: Int {
+        baggageSpace - amountOfLuggage
+    }
+    
+    var openDoors: Set<Doors> = []
+
+    internal var isLukeOpen: Bool = false {
+        didSet {
+            if isLukeOpen {
+                print("Люк открыт.")
+            } else {
+                print("Люк закрыт.")
+            }
+        }
+    }
+    
+    internal var isSpoilerExist: Bool = false {
+        didSet {
+            if isSpoilerExist {
+                print("Спойлер установлен.")
+            } else {
+                print("Спойлер снят.")
+            }
+        }
+    }
+
+    required init(model: String, yearOfIssue: Int, baggageSpace: Int, power: Int, color: Colors) {
+        self.model = model
+        self.yearOfIssue = yearOfIssue
+        self.baggageSpace = baggageSpace
+        self.power = power
+        self.color = color
+    }
+        
+    func increaseBaggageSpaceOn(space: Int) {
+        if (baggageSpace + space) < 200 {
+            baggageSpace += space
+        } else {
+            print("Не надо так. Лучше купи грузовик.")
+        }
+    }
+}
+    
+extension SportCar: SportCarSpoilerOptions {
+    func putSpoiler() {
+        guard !isSpoilerExist else {
+            print("Уже установлен.")
+            return
+        }
+        isSpoilerExist = true
+    }
+    
+    func deleteSpoiler() {
+        guard isSpoilerExist else {
+            print("Спойлера и не было.")
+            return
+        }
+        isSpoilerExist = false
+    }
+}
+
+extension SportCar: SportCarLukeOptions {
+    func openLuke() {
+        guard !isLukeOpen else {
+            print("Люк уже открыт.")
+            return
+        }
+        isLukeOpen = true
+    }
+    
+    func closeLuke() {
+        guard isLukeOpen else {
+            print("Люк уже закрыт.")
+            return
+        }
+        isLukeOpen = false
+    }
+}
+
+extension SportCar: CustomStringConvertible {
+    var description: String {
+        return """
+        цвет: \(color) \n
+        мощность: \(power) \n
+        объем багажника: \(baggageSpace) \n
+        модель: \(model) \n
+        год выпуска: \(yearOfIssue) \n
+        объем груза: \(amountOfLuggage) \n
+        открытые двери: \(openDoors) \n
+        установлен ли спойлер: \(isSpoilerExist) \n
+        открыт ли люк: \(isLukeOpen)
+        """
+    }
+}
+
+var sportCar = SportCar(model: "bmw", yearOfIssue: 2020, baggageSpace: 300, power: 4000, color: Colors.black)
+sportCar.putLuggage(luggage: 30)
+sportCar.putSpoiler()
+sportCar.openLuke()
+sportCar.openDoor(door: Doors.backLeftDoor)
+sportCar.increaseBaggageSpaceOn(space: 23)
+
+print()
+print(sportCar)
+
+print()
+print()
+print()
+print()
+
+
+var truck = Truck(model: "mersedes", yearOfIssue: 1999, baggageSpace: 10000, power: 100, color: Colors.green)
+truck.downFlatBed()
+truck.startEngine()
+
+print()
+print(truck)
 
