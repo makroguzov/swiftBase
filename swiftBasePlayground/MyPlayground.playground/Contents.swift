@@ -934,3 +934,56 @@ print(truck)
 3. * Добавить свой subscript, который будет возвращать nil в случае обращения к несуществующему индексу.
  */
 
+protocol Container {
+    associatedtype T
+    
+    func size() -> Int
+    func empty() -> Bool
+    mutating func push(elem: T)
+    mutating func pop(elem: T) -> T
+}
+
+protocol FilteredContainer: Container {
+    func filter(_ expression: (T) -> Bool) -> [T]
+}
+
+protocol ForEachActionContainer : Container {
+    func forEach(_ expression: (T) -> (T)) -> [T]
+}
+
+struct Queue<T>: Container {
+    private var queueList: [T] = []
+    
+    func size() -> Int {
+        return queueList.count
+    }
+    
+    func empty() -> Bool {
+        return queueList.isEmpty
+    }
+    
+    mutating func push(elem: T) {
+        queueList.append(elem)
+    }
+    
+    mutating func pop(elem: T) -> T{
+        return queueList.removeLast()
+    }
+}
+
+extension Queue: FilteredContainer {
+    func filter(_ expression: (T) -> Bool)  -> [T] {
+        return queueList.filter(expression)
+    }
+}
+
+extension Queue: ForEachActionContainer {
+    func forEach(_ expression: (T) -> (T)) -> [T] {
+        var newQueue: [T] = []
+        for elem in queueList {
+            newQueue.append(expression(elem))
+        }
+        return newQueue
+    }
+}
+
