@@ -986,8 +986,8 @@ extension Queue: FilteredContainer {
 }
 
 extension Queue: ForEachActionContainer {
-    func forEach(_ expression: (T) -> (T)) -> [T] {
-        var newQueue: [T] = []
+    func forEach<U>(_ expression: (T) -> U) -> [U] {
+        var newQueue = [U]()
         for elem in queueList {
             newQueue.append(expression(elem))
         }
@@ -997,7 +997,7 @@ extension Queue: ForEachActionContainer {
 
 extension Queue {
     subscript (index: Int) -> T? {
-        if index < queueList.count {
+        if index < queueList.count , index >= 0 {
             return queueList[index]
         } else {
             return nil
