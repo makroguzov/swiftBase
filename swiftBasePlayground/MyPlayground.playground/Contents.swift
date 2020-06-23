@@ -934,6 +934,7 @@ print(truck)
 3. * Добавить свой subscript, который будет возвращать nil в случае обращения к несуществующему индексу.
  */
 
+/*
 protocol Container {
     associatedtype T
     
@@ -1013,3 +1014,4 @@ print(queue)
 queue.filter(){
     $0 % 2 == 0
 }
+*/
