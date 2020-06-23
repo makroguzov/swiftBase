@@ -532,7 +532,7 @@ truck.info()
 6. Вывести сами объекты в консоль.
 */
 
-
+/*
 enum Doors {
     case leftFrontDoor,rightFrontDoor,backLeftDoor,backRightDoor,BaggageDoor
 }
@@ -926,4 +926,90 @@ truck.startEngine()
 
 print()
 print(truck)
+ */
 
+/*
+1. Реализовать свой тип коллекции «очередь» (queue) c использованием дженериков.
+2. Добавить ему несколько методов высшего порядка, полезных для этой коллекции (пример: filter для массивов)
+3. * Добавить свой subscript, который будет возвращать nil в случае обращения к несуществующему индексу.
+ */
+
+protocol Container {
+    associatedtype T
+    
+    func size() -> Int
+    func empty() -> Bool
+    mutating func push(elem: T)
+    mutating func pop(elem: T) -> T
+}
+
+protocol FilteredContainer: Container {
+    func filter(_ expression: (T) -> Bool) -> [T]
+}
+
+protocol ForEachActionContainer : Container {
+    func forEach(_ expression: (T) -> (T)) -> [T]
+}
+
+struct Queue<T>: Container {
+    private var queueList: [T]
+    
+    init() {
+        queueList = []
+    }
+    
+    init(_ list: [T]){
+        queueList = list
+    }
+    
+    func size() -> Int {
+        return queueList.count
+    }
+    
+    func empty() -> Bool {
+        return queueList.isEmpty
+    }
+    
+    mutating func push(elem: T) {
+        queueList.append(elem)
+    }
+    
+    mutating func pop(elem: T) -> T{
+        return queueList.removeLast()
+    }
+}
+
+extension Queue: FilteredContainer {
+    func filter(_ expression: (T) -> Bool)  -> [T] {
+        return queueList.filter(expression)
+    }
+}
+
+extension Queue: ForEachActionContainer {
+    func forEach<U>(_ expression: (T) -> U) -> [U] {
+        var newQueue = [U]()
+        for elem in queueList {
+            newQueue.append(expression(elem))
+        }
+        return newQueue
+    }
+}
+
+extension Queue {
+    subscript (index: Int) -> T? {
+        if index < queueList.count , index >= 0 {
+            return queueList[index]
+        } else {
+            return nil
+        }
+    }
+}
+
+var queue: Queue = Queue([2, 4, 6, 8, 9, 11])
+queue[3]
+queue.push(elem: 15)
+queue[20]
+print(queue)
+queue.filter(){
+    $0 % 2 == 0
+}
