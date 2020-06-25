@@ -1015,3 +1015,129 @@ queue.filter(){
     $0 % 2 == 0
 }
 */
+
+/*
+ 1. Придумать класс, методы которого могут создавать непоправимые ошибки. Реализовать их с помощью try/catch.
+ 2. Придумать класс, методы которого могут завершаться неудачей. Реализовать их с использованием Error.
+ */
+
+protocol CarDiscription {
+    var model: String { get set }
+    var vin: Int { get }
+}
+
+class Car: CarDiscription {
+    var model: String
+    var vin: Int
+    
+    init(model: String, vin: Int){
+        self.model = model
+        self.vin = vin
+    }
+}
+
+extension Car: Hashable {
+    func hash(into hasher: inout Hasher) {
+           hasher.combine(vin)
+    }
+    
+    static func == (lhs: Car, rhs: Car) -> Bool {
+        return lhs.vin == rhs.vin
+    }
+}
+
+protocol ParkingBhavior {
+    mutating func parkCar(_ car: Car) throws
+    mutating func removeCar(_ car: Car) throws
+}
+
+class Parking: ParkingBhavior {
+    private var parkedCars: Set<Car> = []
+    private let parkingSize: Int
+    
+    enum ParkingErrors: Error {
+        case noMoreSpace(descriptoin: String)
+        case olreadyParked(description: String)
+        case cantFindCar(description: String)
+    }
+
+    init (parkingSize: Int) {
+        self.parkingSize = parkingSize
+    }
+    
+    func parkCar(_ car: Car) throws {
+        guard parkedCars.count < parkingSize else {
+            throw ParkingErrors.noMoreSpace(descriptoin: "На парковке больше нет свободных мест.")
+        }
+        
+        guard !parkedCars.contains(car) else {
+            throw ParkingErrors.olreadyParked(description: "Отказать.")
+        }
+        
+        parkedCars.insert(car)
+    }
+    
+    func removeCar(_ car: Car) throws {
+        guard parkedCars.contains(car) else {
+            throw ParkingErrors.cantFindCar(description: "Не могу найти такую машину на парковке.")
+        }
+        
+        parkedCars.remove(car)
+    }
+    
+    func removeAllCars() {
+        parkedCars.removeAll()
+    }
+}
+
+var car1 = Car(model: "BMW", vin: 1)
+var car2 = Car(model: "qwe", vin: 2)
+var car3 = Car(model: "sas", vin: 3)
+var car4 = Car(model: "wfsdc", vin: 4)
+
+var parking = Parking(parkingSize: 3)
+
+do {
+    try parking.parkCar(car1)
+    print("припарковали car1")
+    try parking.parkCar(car2)
+    print("припарковали car2")
+    try parking.parkCar(car2) //попробовали запарковаться еще раз
+    print("припарковали car2")
+} catch Parking.ParkingErrors.cantFindCar(let descriptoion) {
+    print(descriptoion)
+} catch Parking.ParkingErrors.noMoreSpace(let description) {
+    print(description)
+} catch Parking.ParkingErrors.olreadyParked(let description) {
+    print(description)
+}
+
+parking.removeAllCars()
+
+do {
+    try parking.parkCar(car1)
+    print("припарковали car1")
+    try parking.parkCar(car2)
+    print("припарковали car2")
+    try parking.parkCar(car3)
+    print("припарковали car3")
+    try parking.parkCar(car4)
+    print("припарковали car4")
+
+} catch Parking.ParkingErrors.cantFindCar(let descriptoion) {
+    print(descriptoion)
+} catch Parking.ParkingErrors.noMoreSpace(let description) {
+    print(description)
+} catch Parking.ParkingErrors.olreadyParked(let description) {
+    print(description)
+}
+
+do {
+    try parking.removeCar(car4)
+} catch Parking.ParkingErrors.cantFindCar(let descriptoion) {
+    print(descriptoion)
+} catch Parking.ParkingErrors.noMoreSpace(let description) {
+    print(description)
+} catch Parking.ParkingErrors.olreadyParked(let description) {
+    print(description)
+}
