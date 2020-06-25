@@ -19,8 +19,14 @@ struct CollisionCategories {
 class GameScene: SKScene {
     private var snake: Snake!
     
+    var bgTexture: SKTexture!
+    var bg = SKSpriteNode()
+    var bgObject = SKNode()
+    
     override func didMove(to view: SKView) {
-        backgroundColor = .black
+        bgTexture = SKTexture(imageNamed: "bg_image.jpg")
+        self.addChild(bgObject)
+        createBG()
         
         physicsWorld.gravity = CGVector(dx: 0, dy: 0)
         
@@ -40,13 +46,33 @@ class GameScene: SKScene {
         physicsBody?.collisionBitMask = CollisionCategories.Snake | CollisionCategories.SnakeHead
         
     }
+    
+    func createBG() {
+        bgTexture = SKTexture(imageNamed: "bg_image.jpg")
         
+        bg = SKSpriteNode(texture: bgTexture)
+        bg.position = CGPoint(x: size.width / 2, y: size.height / 2 )
+        bg.size.height = self.frame.height
+        bg.size.width = self.frame.width
+        bg.zPosition = -1
+        
+        bgObject.addChild(bg)
+    }
+
     private func createApple() {
-        let randX = CGFloat.random(in: 0..<frame.maxX - 5)
-        let randY = CGFloat.random(in: 0..<frame.maxY - 5)
+        let randX = CGFloat.random(in: 0..<frame.maxX - 10)
+        let randY = CGFloat.random(in: 0..<frame.maxY - 10)
         
-        let apple = Apple(position: CGPoint(x: randX, y: randY))
+        let apple = Apple(position: CGPoint(x: randX, y: randY))        
         addChild(apple)
+
+        let appleTexture :SKTexture! = SKTexture(imageNamed: "apple_image.jpg")
+        let appleTextureNode: SKSpriteNode = SKSpriteNode(texture: appleTexture)
+        
+        appleTextureNode.size.height = 20.0
+        appleTextureNode.size.width = 20.0
+        
+        apple.addChild(appleTextureNode)
     }
     
     func addSwipe() {
@@ -74,18 +100,6 @@ class GameScene: SKScene {
         }
     }
 
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-    }
-    
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-    }
-    
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-    }
-    
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-    }
-    
     override func update(_ currentTime: TimeInterval) {
         snake.move()
     }
@@ -105,6 +119,8 @@ extension GameScene: SKPhysicsContactDelegate {
             apple?.removeFromParent()
             createApple()
         case CollisionCategories.EdgeBody:
+            
+            //exit(1)
             break
         default:
             break
