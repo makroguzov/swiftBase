@@ -14,19 +14,14 @@ struct CollisionCategories {
     static let SnakeHead: UInt32 = 1 << 1
     static let Apple: UInt32 = 1 << 2
     static let EdgeBody: UInt32 = 1 << 3
+    static let Wall: UInt32 = 1 << 4
 }
 
 class GameScene: SKScene {
     private var snake: Snake!
     
-    var bgTexture: SKTexture!
-    var bg = SKSpriteNode()
-    var bgObject = SKNode()
-    
     override func didMove(to view: SKView) {
-        bgTexture = SKTexture(imageNamed: "bg_image.jpg")
-        self.addChild(bgObject)
-        createBG()
+        createBG(fileName: "bg_image")
         
         physicsWorld.gravity = CGVector(dx: 0, dy: 0)
         
@@ -39,6 +34,7 @@ class GameScene: SKScene {
         addChild(snake)
         
         createApple()
+        createFrameWalls()
     
         physicsWorld.contactDelegate = self
         physicsBody?.categoryBitMask = CollisionCategories.EdgeBody
@@ -47,10 +43,13 @@ class GameScene: SKScene {
         
     }
     
-    func createBG() {
-        bgTexture = SKTexture(imageNamed: "bg_image.jpg")
+    func createBG(fileName: String) {
+        let bgTexture: SKTexture = SKTexture(imageNamed: fileName)
+        let bg: SKSpriteNode = SKSpriteNode(texture: bgTexture)
+
+        let bgObject = SKNode()
+        addChild(bgObject)
         
-        bg = SKSpriteNode(texture: bgTexture)
         bg.position = CGPoint(x: size.width / 2, y: size.height / 2 )
         bg.size.height = self.frame.height
         bg.size.width = self.frame.width
@@ -59,20 +58,26 @@ class GameScene: SKScene {
         bgObject.addChild(bg)
     }
 
+    private func createFrameWalls() {
+        let leftWall = Wall(position: CGPoint(x: Wall.height / 2 , y: frame.maxY / 2), width: frame.maxY, zRotation: CGFloat.pi / 2)
+        addChild(leftWall)
+        
+        let rigthtWall = Wall(position: CGPoint(x: frame.maxX - Wall.height / 2 , y: frame.maxY / 2), width: frame.maxY, zRotation: CGFloat.pi / 2)
+        addChild(rigthtWall)
+        
+        let downWall = Wall(position: CGPoint(x: frame.maxX / 2, y: Wall.height / 2), width: frame.maxX - 2 * Wall.height, zRotation: 0)
+        addChild(downWall)
+        
+        let upWall = Wall(position: CGPoint(x: frame.maxX / 2, y: frame.maxY - Wall.height), width: frame.maxX - 2 * Wall.height, zRotation: 0)
+        addChild(upWall)
+    }
+    
     private func createApple() {
-        let randX = CGFloat.random(in: 0..<frame.maxX - 10)
-        let randY = CGFloat.random(in: 0..<frame.maxY - 10)
+        let randX = CGFloat.random(in: 0..<frame.maxX - (10 + Wall.height))
+        let randY = CGFloat.random(in: 0..<frame.maxY - (10 + Wall.height))
         
         let apple = Apple(position: CGPoint(x: randX, y: randY))        
         addChild(apple)
-
-        let appleTexture :SKTexture! = SKTexture(imageNamed: "apple_image.jpg")
-        let appleTextureNode: SKSpriteNode = SKSpriteNode(texture: appleTexture)
-        
-        appleTextureNode.size.height = 20.0
-        appleTextureNode.size.width = 20.0
-        
-        apple.addChild(appleTextureNode)
     }
     
     func addSwipe() {
@@ -119,9 +124,8 @@ extension GameScene: SKPhysicsContactDelegate {
             apple?.removeFromParent()
             createApple()
         case CollisionCategories.EdgeBody:
-            
-            //exit(1)
-            break
+            self.removeAllChildren()
+            createBG(fileName: "lose_screen")
         default:
             break
         }

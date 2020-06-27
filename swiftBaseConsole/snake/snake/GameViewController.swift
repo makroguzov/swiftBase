@@ -21,6 +21,7 @@ class GameViewController: UIViewController {
             
             let scene = GameScene(size: CGSize(width: 2024, height: 768))
             scene.scaleMode = .resizeFill
+            scene.zRotation = 0
             
             view.ignoresSiblingOrder = true
             
@@ -58,6 +59,10 @@ class GameViewController: UIViewController {
         backgroundMusicPlayer.play()
     }
 
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        didMove(toParent: self)
+    }
+    
     override var shouldAutorotate: Bool {
         return true
     }

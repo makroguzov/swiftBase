@@ -17,8 +17,8 @@ class Snake: SKShapeNode {
     }
     
     private var body = [SnakeBody]()
-    private let moveSpeed: CGFloat = 100.0
-    private var direction: Directions = .up
+    private let moveSpeed: CGFloat = 150.0
+    private var direction: Directions = .rigth
     
     private var angle: CGFloat {
         switch direction {
@@ -38,6 +38,9 @@ class Snake: SKShapeNode {
         
         let head = SnakeHead(position: position)
         body.append(head)
+        for _ in 0...5{
+            addBodyPart()
+        }
         
         addChild(head)
     }
