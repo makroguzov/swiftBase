@@ -13,9 +13,8 @@ class SnakeHead: SnakeBody {
         super.init(position: position)
         
         physicsBody?.categoryBitMask = CollisionCategories.SnakeHead
-        
         physicsBody?.contactTestBitMask = CollisionCategories.Apple |
-            CollisionCategories.EdgeBody | CollisionCategories.Snake
+            CollisionCategories.Wall | CollisionCategories.Snake
     }
     
     required init?(coder aDecoder: NSCoder) {

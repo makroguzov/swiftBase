@@ -13,8 +13,7 @@ struct CollisionCategories {
     static let Snake: UInt32 = 1
     static let SnakeHead: UInt32 = 1 << 1
     static let Apple: UInt32 = 1 << 2
-    static let EdgeBody: UInt32 = 1 << 3
-    static let Wall: UInt32 = 1 << 4
+    static let Wall: UInt32 = 1 << 3
 }
 
 class GameScene: SKScene {
@@ -37,9 +36,8 @@ class GameScene: SKScene {
         createFrameWalls()
     
         physicsWorld.contactDelegate = self
-        physicsBody?.categoryBitMask = CollisionCategories.EdgeBody
         
-        physicsBody?.collisionBitMask = CollisionCategories.Snake | CollisionCategories.SnakeHead
+  //      physicsBody?.collisionBitMask = CollisionCategories.Snake | CollisionCategories.SnakeHead
         
     }
     
@@ -68,7 +66,7 @@ class GameScene: SKScene {
         let downWall = Wall(position: CGPoint(x: frame.maxX / 2, y: Wall.height / 2), width: frame.maxX - 2 * Wall.height, zRotation: 0)
         addChild(downWall)
         
-        let upWall = Wall(position: CGPoint(x: frame.maxX / 2, y: frame.maxY - Wall.height), width: frame.maxX - 2 * Wall.height, zRotation: 0)
+        let upWall = Wall(position: CGPoint(x: frame.maxX / 2, y: frame.maxY - Wall.height / 2), width: frame.maxX - 2 * Wall.height, zRotation: 0)
         addChild(upWall)
     }
     
@@ -108,6 +106,11 @@ class GameScene: SKScene {
     override func update(_ currentTime: TimeInterval) {
         snake.move()
     }
+
+    func finishTheGame() {
+        self.removeAllChildren()
+        createBG(fileName: "lose_screen")
+    }
 }
 
 extension GameScene: SKPhysicsContactDelegate {
@@ -123,9 +126,10 @@ extension GameScene: SKPhysicsContactDelegate {
             
             apple?.removeFromParent()
             createApple()
-        case CollisionCategories.EdgeBody:
-            self.removeAllChildren()
-            createBG(fileName: "lose_screen")
+        case CollisionCategories.Wall:
+            finishTheGame()
+        case CollisionCategories.Snake:
+            finishTheGame()
         default:
             break
         }

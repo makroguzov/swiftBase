@@ -22,7 +22,7 @@ class Wall: SKNode {
         self.position = position
         self.zRotation = zRotation
         
-        physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: width, height: Wall.height), center: CGPoint(x: 0, y: 0))
+        physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: width - 2, height: Wall.height - 2), center: CGPoint(x: 0, y: 0))
         physicsBody?.categoryBitMask = CollisionCategories.Wall
         
         creTexture()
